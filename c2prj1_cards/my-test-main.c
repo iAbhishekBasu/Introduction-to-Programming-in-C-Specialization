@@ -11,4 +11,3 @@ int main(void) {
   print_card(c2);
 
 }
-
