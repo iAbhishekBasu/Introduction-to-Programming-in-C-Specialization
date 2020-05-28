@@ -1,17 +1,5 @@
-Grading at Thu May 28 13:28:17 UTC 2020
-I expected to find a file called 'tests.txt' but it did not exist
-(or was not a regular file)
-Here are the files that I can find:
-grade.txt
-input1.txt
-input2.txt
-input3.txt
-input4.txt
-input5.txt
-input.txt
-next-README
-README
-run_all.sh
-Can't proceed without tests.txt
+Grading at Thu May 28 13:30:24 UTC 2020
+Checking rotateMatrix1
+***Your tests failed to show that rotateMatrix1 was broken!
 
 Overall Grade: FAILED
