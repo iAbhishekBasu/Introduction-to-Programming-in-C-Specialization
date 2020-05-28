@@ -4,28 +4,113 @@
 #include <assert.h>
 
 int card_ptr_comp(const void * vp1, const void * vp2) {
+  if (vp1 == NULL || vp2 == NULL)
+    return EXIT_FAILURE;
+
+  const card_t * const * card1 = vp1;
+  const card_t * const * card2 = vp2;
+
+  if ((*card1)->value != (*card2)->value)
+    return (*card2)->value - (*card1)->value;
+  else
+    return (*card1)->suit - (*card2)->suit;
   return 0;
 }
 
 suit_t flush_suit(deck_t * hand) {
+  for (suit_t suit = SPADES; suit <= CLUBS; suit++) {
+    int suit_cards = 0;
+    for (int i = 0; i < hand->n_cards; i++) {
+      if (hand->cards[i]->suit == suit)
+	suit_cards++;
+      if (suit_cards == 5)
+	return suit;
+    }
+  }
   return NUM_SUITS;
 }
 
 unsigned get_largest_element(unsigned * arr, size_t n) {
+  unsigned largest = arr[0];
+  for (int i = 1; i < n; i++) {
+    if (arr[i] > largest)
+      largest = arr[i];
+  }
+  return largest;
+}
+
+size_t get_match_index(unsigned * match_counts, size_t n, unsigned n_of_akind){
+  for (int i = 0; i < n; i++) {
+    if (match_counts[i] == n_of_akind)
+      return i;
+  }
   return 0;
 }
 
-size_t get_match_index(unsigned * match_counts, size_t n,unsigned n_of_akind){
-
-  return 0;
-}
 ssize_t  find_secondary_pair(deck_t * hand,
 			     unsigned * match_counts,
 			     size_t match_idx) {
+
+  for (int i = 0; i < hand->n_cards; i++) {
+    if (match_counts[i] > 1 && hand->cards[i]->value != hand->cards[match_idx]->value)
+      return i;
+  }
   return -1;
 }
 
+// helper function for is_straight_at
+int check_ace_low(deck_t * hand, size_t index, suit_t fs) {
+  if (hand->cards[index]->value == VALUE_ACE &&
+      (fs == NUM_SUITS || hand->cards[index]->suit == fs))
+    return 1;
+  return 0;
+}
+
+// helper function for is_straight_at
+int is_n_length_straight_at(deck_t * hand, size_t index, suit_t fs, int n) {
+  int straight_cards = 0;
+  unsigned nextv = 5;
+  for (int i = index + 1; i < hand->n_cards; i++) {
+    if (hand->cards[i]->value == nextv &&
+	(fs == NUM_SUITS || hand->cards[i]->suit == fs)) {
+      straight_cards++;
+      nextv--;
+    }
+    if (straight_cards == n)
+      return 1;
+  }
+  return 0;
+}
+
+// helper function for is_straight_at (regular straight)
+int is_reg_straight_at(deck_t * hand, size_t index, suit_t fs, int n) {
+  int straight_cards = 1;
+  int nextv = hand->cards[index]->value - 1;
+
+  if (fs != NUM_SUITS && fs != hand->cards[index]->suit)
+    return 0;
+
+  for (int i = index + 1; i < hand->n_cards; i++) {
+    if ((hand->cards[i]->value == nextv) &&
+	(fs == NUM_SUITS || (hand->cards[i]->suit) == fs)) {
+      straight_cards++;
+      nextv--;
+    }
+    if (straight_cards == n)
+      return 1;
+  }
+  return 0;
+}
+
 int is_straight_at(deck_t * hand, size_t index, suit_t fs) {
+  // regular straight
+  if (is_reg_straight_at(hand, index, fs, 5))
+    return 1;
+
+  // ace low straight (flush)
+  if (check_ace_low(hand, index, fs) && is_n_length_straight_at(hand, index, fs, 4))
+    return -1;
+
   return 0;
 }
 
@@ -35,12 +120,45 @@ hand_eval_t build_hand_from_match(deck_t * hand,
 				  size_t idx) {
 
   hand_eval_t ans;
+  ans.ranking = what;
+  int index = 0;
+  int more_cards = 5 - n;
+  int n_of_a_kind = hand->cards[idx]->value;
+
+  for (int i = idx; i < idx + n; i++, index++)
+    ans.cards[index] = hand->cards[i];
+
+  for (int i = 0; i < hand->n_cards; i++) {
+    if (hand->cards[i]->value != n_of_a_kind) {
+      ans.cards[index] = hand->cards[i];
+      more_cards--;
+      index++;
+    }
+    if (more_cards == 0)
+      break;
+  }
   return ans;
 }
 
 
 int compare_hands(deck_t * hand1, deck_t * hand2) {
+  qsort(hand1->cards, hand1->n_cards, sizeof(card_t *), card_ptr_comp);
+  qsort(hand2->cards, hand2->n_cards, sizeof(card_t *), card_ptr_comp);
 
+  hand_eval_t hand_1 = evaluate_hand(hand1);
+  hand_eval_t hand_2 = evaluate_hand(hand2);
+
+  if (hand_1.ranking < hand_2.ranking)
+    return 1;
+  else if (hand_2.ranking < hand_1.ranking)
+    return -1;
+
+  for (int i = 0; i < 5; i++) {
+    if (hand_1.cards[i]->value > hand_2.cards[i]->value)
+      return 1;
+    else if (hand_1.cards[i]->value < hand_2.cards[i]->value)
+      return -1;
+  }
   return 0;
 }
 
@@ -93,22 +211,26 @@ int find_straight(deck_t * hand, suit_t fs, hand_eval_t * ans) {
   }
   for(size_t i = 0; i <= hand->n_cards -5; i++) {
     int x = is_straight_at(hand, i, fs);
-    if (x != 0){
-      if (x < 0) { //ace low straight
-	assert(hand->cards[i]->value == VALUE_ACE &&
-	       (fs == NUM_SUITS || hand->cards[i]->suit == fs));
-	ans->cards[4] = hand->cards[i];
-	size_t cpind = i+1;
-	while(hand->cards[cpind]->value != 5 ||
-	      !(fs==NUM_SUITS || hand->cards[cpind]->suit ==fs)){
-	  cpind++;
-	  assert(cpind < hand->n_cards);
-	}
-	copy_straight(ans->cards, hand, cpind, fs,4) ;
+    if (x >0){
+      copy_straight(ans->cards, hand, i, fs,5);
+      return 1;
+    }
+  }
+  //we have to check ace low straights LAST since
+  // Ac 6c 5c 4c 3c 2c will give the ace low otherwise
+  for(size_t i = 0; i <= hand->n_cards -5; i++) {
+    int x = is_straight_at(hand, i, fs);
+    if (x < 0) { //ace low straight
+      assert(hand->cards[i]->value == VALUE_ACE &&
+	     (fs == NUM_SUITS || hand->cards[i]->suit == fs));
+      ans->cards[4] = hand->cards[i];
+      size_t cpind = i+1;
+      while(hand->cards[cpind]->value != 5 ||
+	    !(fs==NUM_SUITS || hand->cards[cpind]->suit ==fs)){
+	cpind++;
+	assert(cpind < hand->n_cards);
       }
-      else {
-	copy_straight(ans->cards, hand, i, fs,5);
-      }
+      copy_straight(ans->cards, hand, cpind, fs,4) ;
       return 1;
     }
   }
