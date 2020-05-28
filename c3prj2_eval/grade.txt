@@ -1,56 +1,57 @@
-Grading at Thu May 28 05:17:10 UTC 2020
+Grading at Thu May 28 05:19:03 UTC 2020
 Compiling your code
-rm -f test poker cards.o my-test-main.o *~
+rm test poker cards.o my-test-main.o *~ cards.o deck.o eval.o test-eval
+Makefile:10: recipe for target 'clean' failed
 cc -ggdb3 -Wall -Werror -pedantic -std=gnu99   -c -o deck.o deck.c
 cc -ggdb3 -Wall -Werror -pedantic -std=gnu99   -c -o eval.o eval.c
 cc -ggdb3 -Wall -Werror -pedantic -std=gnu99   -c -o cards.o cards.c
 gcc -o test-eval -ggdb3 deck.o deck-c4.o eval-c4.o eval.o test-eval.o cards.o input.o future.o
 Testcase 1: Trying hands with nothing
 Valgrind returned an error status
-==298== Memcheck, a memory error detector
-==298== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==298== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==298== Command: ./test-eval inp.1.txt
-==298== Parent PID: 297
-==298== 
-==298== Use of uninitialised value of size 8
-==298==    at 0x400C02: print_hand (deck.c:8)
-==298==    by 0x4027BF: describe_hand (test-eval.c:74)
-==298==    by 0x40299F: main (test-eval.c:116)
-==298== 
-==298== Invalid read of size 8
-==298==    at 0x400C02: print_hand (deck.c:8)
-==298==    by 0x4027BF: describe_hand (test-eval.c:74)
-==298==    by 0x40299F: main (test-eval.c:116)
-==298==  Address 0x1 is not stack'd, malloc'd or (recently) free'd
-==298== 
-==298== 
-==298== Process terminating with default action of signal 11 (SIGSEGV): dumping core
-==298==  Access not within mapped region at address 0x1
-==298==    at 0x400C02: print_hand (deck.c:8)
-==298==    by 0x4027BF: describe_hand (test-eval.c:74)
-==298==    by 0x40299F: main (test-eval.c:116)
-==298==  If you believe this happened as a result of a stack
-==298==  overflow in your program's main thread (unlikely but
-==298==  possible), you can try to increase the size of the
-==298==  main thread stack using the --main-stacksize= flag.
-==298==  The main thread stack size used in this run was 8388608.
-==298== 
-==298== HEAP SUMMARY:
-==298==     in use at exit: 864 bytes in 16 blocks
-==298==   total heap usage: 202 allocs, 186 frees, 12,472 bytes allocated
-==298== 
-==298== LEAK SUMMARY:
-==298==    definitely lost: 0 bytes in 0 blocks
-==298==    indirectly lost: 0 bytes in 0 blocks
-==298==      possibly lost: 0 bytes in 0 blocks
-==298==    still reachable: 864 bytes in 16 blocks
-==298==         suppressed: 0 bytes in 0 blocks
-==298== Rerun with --leak-check=full to see details of leaked memory
-==298== 
-==298== For counts of detected and suppressed errors, rerun with: -v
-==298== Use --track-origins=yes to see where uninitialised values come from
-==298== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==556== Memcheck, a memory error detector
+==556== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==556== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==556== Command: ./test-eval inp.1.txt
+==556== Parent PID: 555
+==556== 
+==556== Use of uninitialised value of size 8
+==556==    at 0x400C02: print_hand (deck.c:8)
+==556==    by 0x4027BF: describe_hand (test-eval.c:74)
+==556==    by 0x40299F: main (test-eval.c:116)
+==556== 
+==556== Invalid read of size 8
+==556==    at 0x400C02: print_hand (deck.c:8)
+==556==    by 0x4027BF: describe_hand (test-eval.c:74)
+==556==    by 0x40299F: main (test-eval.c:116)
+==556==  Address 0x1 is not stack'd, malloc'd or (recently) free'd
+==556== 
+==556== 
+==556== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+==556==  Access not within mapped region at address 0x1
+==556==    at 0x400C02: print_hand (deck.c:8)
+==556==    by 0x4027BF: describe_hand (test-eval.c:74)
+==556==    by 0x40299F: main (test-eval.c:116)
+==556==  If you believe this happened as a result of a stack
+==556==  overflow in your program's main thread (unlikely but
+==556==  possible), you can try to increase the size of the
+==556==  main thread stack using the --main-stacksize= flag.
+==556==  The main thread stack size used in this run was 8388608.
+==556== 
+==556== HEAP SUMMARY:
+==556==     in use at exit: 864 bytes in 16 blocks
+==556==   total heap usage: 202 allocs, 186 frees, 12,472 bytes allocated
+==556== 
+==556== LEAK SUMMARY:
+==556==    definitely lost: 0 bytes in 0 blocks
+==556==    indirectly lost: 0 bytes in 0 blocks
+==556==      possibly lost: 0 bytes in 0 blocks
+==556==    still reachable: 864 bytes in 16 blocks
+==556==         suppressed: 0 bytes in 0 blocks
+==556== Rerun with --leak-check=full to see details of leaked memory
+==556== 
+==556== For counts of detected and suppressed errors, rerun with: -v
+==556== Use --track-origins=yes to see where uninitialised values come from
+==556== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
 Testcase 2: Trying hands with pairs
  Checking the output 
 Line_3_did_not_match
