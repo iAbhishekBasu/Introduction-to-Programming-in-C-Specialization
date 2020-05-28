@@ -1,0 +1,15 @@
+Grading at Thu May 28 13:19:47 UTC 2020
+Attempting to compile breaker.c 
+gcc -o breaker  breaker.c
+testcase1 passed
+#################################################
+testcase2:
+testcase2 passed
+#################################################
+testcase3:
+testcase3 passed
+#################################################
+testcase4:
+testcase4 passed
+
+Overall Grade: A
