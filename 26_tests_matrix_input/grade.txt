@@ -1,10 +1,16 @@
-Grading at Thu May 28 13:22:28 UTC 2020
+Grading at Thu May 28 13:28:17 UTC 2020
 I expected to find a file called 'tests.txt' but it did not exist
 (or was not a regular file)
 Here are the files that I can find:
+grade.txt
+input1.txt
+input2.txt
+input3.txt
+input4.txt
+input5.txt
+input.txt
 next-README
 README
-rotateMatrix.c
 run_all.sh
 Can't proceed without tests.txt
 
