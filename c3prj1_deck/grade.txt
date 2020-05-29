@@ -1,23 +1,42 @@
-Grading at Fri May 29 17:48:12 UTC 2020
+Grading at Fri May 29 17:51:40 UTC 2020
 Compiling deck.c
-Compiling cards.c
-Linking cards.o deck.o deck-c4.o and the grader's .o file
-deck-c4.o: In function `make_deck_exclude':
-/home/drew/poker/soln/deck-c4.c:7: multiple definition of `make_deck_exclude'
-deck.o:deck.c:(.text+0x330): first defined here
-deck-c4.o: In function `add_card_to':
-/home/drew/poker/soln/deck-c4.c:26: multiple definition of `add_card_to'
-deck.o:deck.c:(.text+0x200): first defined here
-deck-c4.o: In function `add_empty_card':
-/home/drew/poker/soln/deck-c4.c:36: multiple definition of `add_empty_card'
-deck.o:deck.c:(.text+0x2a0): first defined here
-deck-c4.o: In function `free_deck':
-/home/drew/poker/soln/deck-c4.c:46: multiple definition of `free_deck'
-deck.o:deck.c:(.text+0x740): first defined here
-deck-c4.o: In function `build_remaining_deck':
-/home/drew/poker/soln/deck-c4.c:55: multiple definition of `build_remaining_deck'
-deck.o:deck.c:(.text+0x480): first defined here
-collect2: error: ld returned 1 exit status
-Could not link your code!
+deck.c: In function ‘add_empty_card’:
+deck.c:30:25: error: implicit declaration of function ‘make_empty_card’ [-Werror=implicit-function-declaration]
+   card_t * empty_card = make_empty_card();
+                         ^
+deck.c:30:25: error: initialization makes pointer from integer without a cast [-Werror=int-conversion]
+deck.c: In function ‘build_remaining_deck’:
+deck.c:78:12: error: implicit declaration of function ‘is_empty_card’ [-Werror=implicit-function-declaration]
+       if (!is_empty_card(hands[i]->cards[j])) {
+            ^
+deck.c:85:3: error: implicit declaration of function ‘free_cards’ [-Werror=implicit-function-declaration]
+   free_cards(&temp);
+   ^
+deck.c: At top level:
+deck.c:89:6: error: conflicting types for ‘free_cards’ [-Werror]
+ void free_cards(deck_t * deck) {
+      ^
+deck.c:85:3: note: previous implicit declaration of ‘free_cards’ was here
+   free_cards(&temp);
+   ^
+deck.c: In function ‘fprint_hand’:
+deck.c:112:5: error: implicit declaration of function ‘fprint_card’ [-Werror=implicit-function-declaration]
+     fprint_card(f, hand->cards[i][0]);
+     ^
+deck.c: In function ‘deck_contains’:
+deck.c:135:8: error: implicit declaration of function ‘card_ptr_comp’ [-Werror=implicit-function-declaration]
+     if(card_ptr_comp(&deck_card_ptr, &target_card_ptr) == 0) {
+        ^
+deck.c: In function ‘shuffle’:
+deck.c:144:5: error: implicit declaration of function ‘swap_cards’ [-Werror=implicit-function-declaration]
+     swap_cards(d->cards[i], d->cards[rand() % d->n_cards]);
+     ^
+deck.c: In function ‘sort_cards’:
+deck.c:164:51: error: ‘card_ptr_comp’ undeclared (first use in this function)
+   qsort(array, nelements, sizeof(const card_t *), card_ptr_comp);
+                                                   ^
+deck.c:164:51: note: each undeclared identifier is reported only once for each function it appears in
+cc1: all warnings being treated as errors
+Could not compile your deck.c!
 
 Overall Grade: FAILED
