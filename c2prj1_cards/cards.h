@@ -28,7 +28,6 @@ typedef enum {
   PAIR,
     NOTHING
 } hand_ranking_t;
-
 card_t card_from_num(unsigned c);
 void assert_card_valid(card_t c);
 const char * ranking_to_string(hand_ranking_t r) ;
